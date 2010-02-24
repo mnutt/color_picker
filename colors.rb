@@ -34,7 +34,7 @@ get '/search.?:format?/:red/:green/:blue' do
           :green => c["green"],
           :blue => c["blue"]
         },
-        :image_path => c["look"]["image_path"].sub(/\/Users\/michael\/code\/gilt\/share\/public\/uploads/, "http://localhost:3000/images/share/uploads")
+        :image_path => c["look"]["image_path"].sub(/\/Users\/michael\/code\/gilt\/share\/public\/uploads/, "http://#{request.host}:3000/images/share/uploads")
       }
     }
     JSON.generate(color_hash)
