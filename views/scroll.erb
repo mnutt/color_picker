@@ -1,0 +1,116 @@
+<html>
+  <head>
+    <title>Gilt Scroll</title>
+    <script type="text/javascript" src="/js/colors.js"></script>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+
+    <style type="text/css">
+      body {
+        background: #000 url(/images/gilt-logo.png) top left no-repeat;
+      }
+
+      div.row {
+        width: 936px;
+        margin: auto;
+      }
+
+      #container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 42px;
+        overflow: hidden;
+        background: url(/images/slot_top.png) 50% bottom no-repeat;
+      }
+
+      #slot_bottom {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 42px;
+        background: url(/images/slot_bottom.png) 50% 0 no-repeat;
+        text-align: center;
+      }
+
+      #slot_bottom img.overlay {
+        z-index: 10;
+        position: relative;
+        top: -10px;
+        right: 3px;
+      }
+
+      div.look {
+        float: left;
+        margin: 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <div id="slot_bottom"><img class="overlay" src="/images/overlay.png"></div>
+    <script>
+      if(typeof(window.console) == "undefined") {
+        console = {}; console.log = function() {};
+      }
+
+      var i = 0;
+      var lookQueue = [];
+
+      var getMoreStyles = function() {
+        console.log("Getting styles");
+        if(lookQueue.length > 50) { return; }
+
+        i = i + 1 % 100;
+
+        var color = chooseColor(i);
+        var rgb = "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
+
+        $.getJSON("/search.json/" + color[0] + "/" + color[1] + "/" + color[2], function(data) {
+          $.each(data, function() {
+            for(var i = 0; i < lookQueue.length; i++) {
+              if(lookQueue[i].image_path == this.image_path) {
+                console.log("dup: " + this.image_path);
+                return;
+              }
+            }
+            lookQueue.push(this);
+          });
+          console.log("queue length: " + lookQueue.length);
+        });
+      };
+
+      var showMoreStyles = function() {
+        console.log("Showing styles");
+        console.log("queue length: " + lookQueue.length);
+        if(lookQueue.length < 3) { setTimeout(showMoreStyles, 1000); return; }
+
+        var looks = lookQueue.splice(0, 3);
+
+        var rowDiv = $("<div class='row'></div>");
+
+        $.each(looks, function() {
+          var look = $("<div class='look'><img width=270 height=360 src='" + this.image_path + "'></div>");
+          look.appendTo(rowDiv);
+        });
+
+        if($("#container > div.row").length > 6) {
+          $("#container > div.row:last").remove();
+        }
+
+        rowDiv.css({ marginTop: -400 });
+        rowDiv.prependTo("#container");
+        rowDiv.animate({ marginTop: 0 }, 3000, 'linear', function() {
+          showMoreStyles();
+        });
+      };
+
+      setInterval(getMoreStyles, 1000);
+      getMoreStyles();
+
+      setTimeout(showMoreStyles, 2000);
+    </script>
+  </body>
+</html>
