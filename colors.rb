@@ -16,7 +16,7 @@ get '/scroll' do
 end
 
 get '/search.?:format?/:red/:green/:blue' do
-  limit = params[:format] ? 12 : 300
+  limit = params[:format] ? 90 : 300
   @red, @green, @blue = %w(red green blue).map{|c| params[c.to_sym].to_i }
   @color = "rgb(#{@red}, #{@green}, #{@blue})"
   @db = Mongo::Connection.new.db('gilt-look-colors')
@@ -34,7 +34,7 @@ get '/search.?:format?/:red/:green/:blue' do
           :green => c["green"],
           :blue => c["blue"]
         },
-        :image_path => c["look"]["image_path"].sub(/\/Users\/michael\/code\/gilt\/share\/public\/uploads/, "http://#{request.host}:3000/images/share/uploads")
+        :image_path => c["look"]["image_path"].sub(/\/Users\/michael\/code\/gilt\/share\/public\/uploads/, "http://#{request.host}:3000/images/share/uploads").sub(/list\.jpg/, 'sm.jpg')
       }
     }
     JSON.generate(color_hash)

@@ -43,7 +43,7 @@
 
       div.look {
         float: left;
-        margin: 20px;
+        margin: 20px 22px;
       }
     </style>
   </head>
@@ -56,12 +56,12 @@
         console = {}; console.log = function() {};
       }
 
-      var i = 0;
+      var i = parseInt(Math.random() * 100, 10);
       var lookQueue = [];
 
       var getMoreStyles = function() {
         console.log("Getting styles");
-        if(lookQueue.length > 50) { return; }
+        if(lookQueue.length > 150) { return; }
 
         i = i + 1 % 100;
 
@@ -85,22 +85,23 @@
       var showMoreStyles = function() {
         console.log("Showing styles");
         console.log("queue length: " + lookQueue.length);
-        if(lookQueue.length < 3) { setTimeout(showMoreStyles, 1000); return; }
+        if(lookQueue.length < 8) { setTimeout(showMoreStyles, 1000); return; }
 
-        var looks = lookQueue.splice(0, 3);
+        var looks = lookQueue.splice(0, 8);
 
         var rowDiv = $("<div class='row'></div>");
 
         $.each(looks, function() {
-          var look = $("<div class='look'><img width=270 height=360 src='" + this.image_path + "'></div>");
+          var look = $("<div class='look'><img width=72 height=96 src='" + this.image_path + "'></div>");
           look.appendTo(rowDiv);
         });
 
-        if($("#container > div.row").length > 6) {
+        if($("#container > div.row").length > 20) {
+          console.log("removing last");
           $("#container > div.row:last").remove();
         }
 
-        rowDiv.css({ marginTop: -400 });
+        rowDiv.css({ marginTop: -135 });
         rowDiv.prependTo("#container");
         rowDiv.animate({ marginTop: 0 }, 3000, 'linear', function() {
           showMoreStyles();
