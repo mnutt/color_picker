@@ -69,6 +69,7 @@
       <div id="looks">
         <% @colors.each do |color| %>
           <div class="look">
+            <% next unless color && color["look"] && color["look"]["image_path"] %>
             <img src="<%= color["look"]["image_path"].sub(/\/Users\/michael\/code\/gilt\/share\/public\/uploads/, "http://cdn1.gilt.com/images/share/uploads") %>" width="270" height="360">
           </div>
         <% end %>

@@ -6,7 +6,14 @@
 
     <style type="text/css">
       body {
-        background: #000 url(/images/gilt-logo.png) top left no-repeat;
+        background-color: #000;
+      }
+
+      #gilt-logo {
+        width: 121px;
+        height: 65px;
+        background-image: url(/images/gilt-logo-black-reverse.png);
+        background-color: #FFF;
       }
 
       div.row {
@@ -49,6 +56,7 @@
   </head>
 
   <body>
+    <div id="gilt-logo"></div>
     <div id="container"></div>
     <div id="slot_bottom"><img class="overlay" src="/images/overlay.png"></div>
     <script>
@@ -63,7 +71,8 @@
         console.log("Getting styles");
         if(lookQueue.length > 150) { return; }
 
-        i = i + 1 % 100;
+        i = (i + 1) % 100;
+        console.log(i);
 
         var color = chooseColor(i);
         var rgb = "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
@@ -76,23 +85,22 @@
                 return;
               }
             }
-            lookQueue.push(this);
+            lookQueue.push([this, rgb]);
           });
           console.log("queue length: " + lookQueue.length);
         });
       };
 
       var showMoreStyles = function() {
-        console.log("Showing styles");
-        console.log("queue length: " + lookQueue.length);
         if(lookQueue.length < 8) { setTimeout(showMoreStyles, 1000); return; }
 
         var looks = lookQueue.splice(0, 8);
 
         var rowDiv = $("<div class='row'></div>");
 
+        $("#gilt-logo").css("background-color", looks[0][1]);
         $.each(looks, function() {
-          var look = $("<div class='look'><img width=72 height=96 src='" + this.image_path + "'></div>");
+          var look = $("<div class='look'><img width=72 height=96 src='" + this[0].image_path + "'></div>");
           look.appendTo(rowDiv);
         });
 
